@@ -4,6 +4,8 @@ NOW = $(shell date -u '+%Y%m%d%I%M%S')
 
 APP = $(shell cat vname)
 
+all: build
+
 # 初始化mod
 init:
 	go mod init ${APP}

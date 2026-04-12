@@ -30,7 +30,8 @@ runs:
       run: |
         echo "appname: `cat vname`, version: `cat version`"
         sed -i "s|app|`cat vname`|g" Dockerfile
-        make `cat vname` && docker build -t image --no-cache .
+        docker build -t image --no-cache .
+        # make && docker build -t image --no-cache .
     - name: Push github image
       shell: bash
       run: |
