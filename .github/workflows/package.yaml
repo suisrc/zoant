@@ -6,9 +6,8 @@ on:
     tags: [ "v*" ]
 
 env:
-  GITHUB_REGISTRY: ghcr.io
-  # IMAGE_NAME: suisrc/k8skit
-  # DOCKER_REGISTRY: docker.io
+  IMAGE_NAME: suisrc/zookit
+  ALIYUN_REGISTRY: registry.cn-beijing.aliyuncs.com
 
 permissions:
   packages: write # GHCR 镜像包写入权限（推送镜像核心）
@@ -24,3 +23,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           # docker_user: ${{ secrets.DOCKER_USER }}
           # docker_token: ${{ secrets.DOCKER_TOKEN }}
+          aliyun_user: ${{ secrets.ALIYUN_USER }}
+          aliyun_token: ${{ secrets.ALIYUN_TOKEN }}

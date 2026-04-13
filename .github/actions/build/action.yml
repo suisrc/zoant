@@ -6,13 +6,21 @@ inputs:
     description: 'github registry workflow token'
     required: true
     secret: true
-  # docker_user:
-  #   description: 'docker.io user name'
-  #   required: true
-  # docker_token:
-  #   description: 'docker.io user token'
-  #   required: true
-  #   secret: true
+  docker_user:
+    description: 'docker.io user name'
+  docker_token:
+    description: 'docker.io user token'
+    secret: true
+  quay_user:
+    description: 'quay.io user name'
+  quay_token:
+    description: 'quay.io user token'
+    secret: true
+  aliyun_user:
+    description: 'aliyun registry user name'
+  aliyun_token:
+    description: 'aliyun registry user token'
+    secret: true
 
 runs:
   using: 'composite'
@@ -24,7 +32,7 @@ runs:
         echo ${TAG_NAME#v} > version
         echo $GITHUB_JOB > vname
         echo "IMAGE_VERSION=${TAG_NAME#v}" >> $GITHUB_ENV
-        # echo "IMAGE_VERSION=${TAG_NAME#v}-$GITHUB_JOB" >> $GITHUB_ENV
+        echo "IMAGE_VERSJOB=${TAG_NAME#v}-$GITHUB_JOB" >> $GITHUB_ENV
     - name: Build image
       shell: bash
       run: |
@@ -32,10 +40,11 @@ runs:
         sed -i "s|app|`cat vname`|g" Dockerfile
         docker build -t image --no-cache .
         # make && docker build -t image --no-cache .
+
     - name: Push github image
       shell: bash
       run: |
-        REGISTRY_URL=$GITHUB_REGISTRY
+        REGISTRY_URL=ghcr.io
         echo "${{ inputs.github_token }}" | docker login $REGISTRY_URL -u ${{ github.actor }} --password-stdin
         IMAGE_ID=$REGISTRY_URL/$GITHUB_REPOSITORY
         echo IMAGE_ID=$IMAGE_ID
@@ -43,14 +52,42 @@ runs:
         echo VERSION=$VERSION
         docker tag image $IMAGE_ID:$VERSION
         docker push $IMAGE_ID:$VERSION
-    # - name: Push docker image
-    #   shell: bash
-    #   run: |
-    #     REGISTRY_URL=$DOCKER_REGISTRY
-    #     echo "${{ inputs.docker_token }}" | docker login $REGISTRY_URL -u ${{ inputs.docker_user }} --password-stdin
-    #     IMAGE_ID=$REGISTRY_URL/$IMAGE_NAME
-    #     echo IMAGE_ID=$IMAGE_ID
-    #     VERSION=$IMAGE_VERSION
-    #     echo VERSION=$VERSION
-    #     docker tag image $IMAGE_ID:$VERSION
-    #     docker push $IMAGE_ID:$VERSION
+
+    - name: Push docker image
+      if: ${{ inputs.docker_user != '' && inputs.docker_token != '' }}
+      shell: bash
+      run: |
+        REGISTRY_URL=docker.io
+        echo "${{ inputs.docker_token }}" | docker login $REGISTRY_URL -u ${{ inputs.docker_user }} --password-stdin
+        IMAGE_ID=$REGISTRY_URL/$IMAGE_NAME
+        echo IMAGE_ID=$IMAGE_ID
+        VERSION=$IMAGE_VERSJOB
+        echo VERSION=$VERSION
+        docker tag image $IMAGE_ID:$VERSION
+        docker push $IMAGE_ID:$VERSION
+
+    - name: Push quay image
+      if: ${{ inputs.quay_user != '' && inputs.quay_token != '' }}
+      shell: bash
+      run: |
+        REGISTRY_URL=quay.io
+        echo "${{ inputs.quay_token }}" | docker login $REGISTRY_URL -u ${{ inputs.quay_user }} --password-stdin
+        IMAGE_ID=$REGISTRY_URL/$IMAGE_NAME
+        echo IMAGE_ID=$IMAGE_ID
+        VERSION=$IMAGE_VERSJOB
+        echo VERSION=$VERSION
+        docker tag image $IMAGE_ID:$VERSION
+        docker push $IMAGE_ID:$VERSION
+
+    - name: Push aliyun image
+      if: ${{ inputs.aliyun_user != '' && inputs.aliyun_token != '' }}
+      shell: bash
+      run: |
+        REGISTRY_URL=$ALIYUN_REGISTRY
+        echo "${{ inputs.aliyun_token }}" | docker login $REGISTRY_URL -u ${{ inputs.aliyun_user }} --password-stdin
+        IMAGE_ID=$REGISTRY_URL/$IMAGE_NAME
+        echo IMAGE_ID=$IMAGE_ID
+        VERSION=$IMAGE_VERSJOB
+        echo VERSION=$VERSION
+        docker tag image $IMAGE_ID:$VERSION
+        docker push $IMAGE_ID:$VERSION
