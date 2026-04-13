@@ -34,8 +34,11 @@ tenv:
 tbin:
 	dist/$(APP) -local -port 81 -c zoo.test.toml
 
-hello:
+hver:
 	go run main.go version
+
+hello:
+	go run main.go hello
 
 push:
 	git push --set-upstream origin $b

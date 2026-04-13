@@ -3,8 +3,8 @@ package main
 import (
 	_ "embed"
 
-	_ "zoant/app"
 	_ "zoant/cmd"
+	_ "zoant/zoant"
 
 	"github.com/suisrc/zoo"
 	"github.com/suisrc/zoo/zoc"

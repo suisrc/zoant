@@ -18,24 +18,24 @@ func init() { Load() }
 
 var (
 	G = struct {
-		Conf Conf `json:"zoant"`
+		Config Config `json:"zoant"`
 	}{}
 )
 
-type Conf struct {
+type Config struct {
 	Path string `json:"path"`
 }
 
 func Load() {
 	zoo.Register("50-hello", &G, register)
-	flag.StringVar(&G.Conf.Path, "apath", "hello", "访问路径")
+	flag.StringVar(&G.Config.Path, "apath", "hello", "访问路径")
 }
 
 // 注册回调函数，返回一个关闭函数，用于资源清理等
 func register(svc zoo.SvcKit) zoo.Closed {
 	hdl := zoo.Inject(svc, &HelloHandler{})
 	hdl.WS = wsz.NewHandler(hdl.NewHook, 1)
-	svc.Router(G.Conf.Path, hdl.hello)
+	svc.Router(G.Config.Path, hdl.hello)
 	svc.Router("ws", hdl.wsworker)
 	svc.Router("", hdl.hello)
 	// hdl := svc.Get("HelloHandler").(*HelloHandler)
@@ -87,11 +87,11 @@ func (hdl *HelloHandler) Receive(code byte, data []byte) (byte, []byte, error) {
 	}
 	rmap := map[string]any{}
 	if err := json.Unmarshal(data, &rmap); err != nil {
-		zoc.Logn("[_hello__]: [not json]", string(data))
+		zoc.Logn("[_zooant_]: [not json]", string(data))
 		return 0, nil, nil
 	}
 	delete(rmap, "level")
 	delete(rmap, "time")
-	zoc.Logn("[_hello__]:", zoc.ToStrText(rmap, "Description", "message"))
+	zoc.Logn("[_zooant_]:", zoc.ToStrText(rmap, "Description", "message"))
 	return 0, nil, nil
 }
