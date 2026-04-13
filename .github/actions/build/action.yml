@@ -41,6 +41,7 @@ runs:
         docker build -t image --no-cache .
         # make && docker build -t image --no-cache .
 
+    # 推送镜像到 GitHub Container Registry
     - name: Push github image
       shell: bash
       run: |
@@ -53,6 +54,7 @@ runs:
         docker tag image $IMAGE_ID:$VERSION
         docker push $IMAGE_ID:$VERSION
 
+    # 推送镜像到 Docker Hub（如果提供了 Docker Hub 凭据）
     - name: Push docker image
       if: ${{ inputs.docker_user != '' && inputs.docker_token != '' }}
       shell: bash
@@ -66,6 +68,7 @@ runs:
         docker tag image $IMAGE_ID:$VERSION
         docker push $IMAGE_ID:$VERSION
 
+    # 推送镜像到 Quay.io（如果提供了 Quay.io 凭据）
     - name: Push quay image
       if: ${{ inputs.quay_user != '' && inputs.quay_token != '' }}
       shell: bash
@@ -79,6 +82,7 @@ runs:
         docker tag image $IMAGE_ID:$VERSION
         docker push $IMAGE_ID:$VERSION
 
+    # 推送镜像到阿里云容器镜像服务（如果提供了阿里云凭据）
     - name: Push aliyun image
       if: ${{ inputs.aliyun_user != '' && inputs.aliyun_token != '' }}
       shell: bash
