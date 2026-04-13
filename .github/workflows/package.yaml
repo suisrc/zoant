@@ -7,7 +7,7 @@ on:
 
 env:
   IMAGE_NAME: suisrc/zookit
-  ALIYUN_REGISTRY: registry.cn-beijing.aliyuncs.com
+  ALIYUN_REGISTRY: registry.cn-hongkong.aliyuncs.com
 
 permissions:
   packages: write # GHCR 镜像包写入权限（推送镜像核心）
