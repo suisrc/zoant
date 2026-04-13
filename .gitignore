@@ -23,6 +23,7 @@ www
 *.out
 *.log
 zoo.test.*
+api.test.*
 
 # atask.md ignore
 atask.md

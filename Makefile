@@ -21,9 +21,10 @@ build:
 	CGO_ENABLED=0 go build -ldflags "-w" -o ./dist/$(APP)
 
 # go env -w GOPROXY=https://proxy.golang.com.cn,direct
+# http://mvn.res.local/repository/go https://nexus.vsc.sims-cn.com/repository/go
 proxy:
 	go env -w GO111MODULE=on
-	go env -w GOPROXY=http://mvn.res.local/repository/go,direct
+	go env -w GOPROXY=https://nexus.vsc.sims-cn.com/repository/go,direct
 	go env -w GOSUMDB=sum.golang.google.cn
 
 # -tpl ./tmpl

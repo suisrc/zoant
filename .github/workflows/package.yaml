@@ -13,7 +13,7 @@ permissions:
   packages: write # GHCR 镜像包写入权限（推送镜像核心）
 
 jobs:
-  zoant:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
